@@ -6,8 +6,8 @@ public class DataDisplay : MonoBehaviour
     public Text nameText;  // 名前表示
     public Text textText;  // 文表示
     private int currentIndex = 0;  // 現在表示しているデータのインデックス
-    public GameObject backgroundName;
-    public GameObject backgroundText;
+    public GameObject backgroundName;  // 名前の後ろにある背景
+    public GameObject backgroundText;  // 文の後ろにある背景
 
     private CSVReader csvReader; // CSVのデータを読み込むクラス
 
@@ -15,23 +15,30 @@ public class DataDisplay : MonoBehaviour
     {
         // CSVファイルを読み込む
         csvReader = GetComponent<CSVReader>();
-
-        // 最初のデータを表示する準備
-        currentIndex = 0;
     }
 
     void Update()
     {
         // スペースキーを押した場合に次のデータを表示
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Mouse0))
         {
-            DisplayNextData();
+            if (currentIndex != csvReader.dataList.Count - 1)
+            {
+                DisplayNextData();
+            }
+            else
+            {
+                backgroundName.SetActive(false);
+                backgroundText.SetActive(false);
+                currentIndex = 0;
+            }
         }
     }
 
     // 表示を開始する
     public void StartDisplay()
     {
+        // 背景表示
         backgroundName.SetActive(true);
         backgroundText.SetActive(true);
 
@@ -65,7 +72,7 @@ public class DataDisplay : MonoBehaviour
         if (csvReader.dataList.Count > 0)
         {
             // インデックスを次に進める
-            currentIndex = (currentIndex + 1) % csvReader.dataList.Count;
+            currentIndex ++;
             DisplayCurrentData();
         }
     }
